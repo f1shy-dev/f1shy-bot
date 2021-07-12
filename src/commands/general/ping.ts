@@ -1,28 +1,21 @@
 import type { CommandOptions } from "@sapphire/framework";
 import type { Message } from "discord.js";
-
 import { Command } from "@sapphire/framework";
-import { ApplyOptions } from "@sapphire/decorators";
-import { MessageEmbed } from "discord.js";
 
-@ApplyOptions<CommandOptions>({
+import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
+import { BasicEmbed } from "../../lib/EmbedBuilders";
+
+@CustomApplyOptions({
   name: "ping",
   description: "Sends back the ping of the bot!",
+  category: "General",
 })
 export default class PingCommand extends Command {
   async run(message: Message): Promise<Message> {
-    const PingEmbed = new MessageEmbed()
-      .setTitle("Measureing Ping!")
-      .setDescription("Ping!")
-      .setColor("GREEN");
-    const msg = await message.channel.send(PingEmbed);
-    return msg.edit(
-      PingEmbed.setTitle("Ping Fetched").setDescription(
-        [
-          "Pong!",
-          `Bot Latency: ${this.context.client.ws.ping}ms.`,
-          `API Latency: ${msg.createdTimestamp - message.createdTimestamp}ms.`,
-        ].join("\n")
+    return await message.channel.send(
+      BasicEmbed(":ping_pong: Pong!").setDescription(
+        `Bot Latency: \`${this.context.client.ws.ping}ms\`
+          API Latency: \`${Date.now() - message.createdTimestamp}ms\``
       )
     );
   }
