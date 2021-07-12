@@ -11,7 +11,7 @@ export const SuccessEmbed = (message: string) =>
     .setDescription("<:success:806285442839609365>  " + message);
 
 export const ImageEmbed = (url: string) =>
-  new MessageEmbed().setColor("BLUE").setImage(url);
+  new MessageEmbed().setColor("#0099ff").setImage(url);
 
 export const BasicEmbed = (title = "") =>
   new MessageEmbed().setColor("#42A5F5").setTitle(title);

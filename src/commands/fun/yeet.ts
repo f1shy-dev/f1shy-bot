@@ -6,19 +6,20 @@ import { ImageEmbed } from "../../lib/EmbedBuilders";
 import { fetch, FetchResultTypes } from "@sapphire/fetch";
 
 @CustomApplyOptions({
-  name: "waifu",
-  description: "Find your anime wife here!",
-  category: "Anime",
+  name: "yeet",
+  description: "The only way to get rid of it, YEET IT!",
+  aliases: ["begone"],
+  category: "Fun",
 })
 export default class CatCommand extends Command {
   async run(message: Message): Promise<Message> {
     const data: any = await fetch(
-      "https://api.waifu.pics/sfw/waifu",
+      "https://api.waifu.pics/sfw/yeet",
       FetchResultTypes.JSON
     );
 
     const embed = ImageEmbed(data.url).setDescription(
-      ":heart_eyes_cat: **Random Waifu**"
+      "<:yeet:864266431868698625> **YEET!**"
     );
 
     return message.channel.send(embed);

@@ -2,24 +2,23 @@ import type { Message } from "discord.js";
 import { Command } from "@sapphire/framework";
 
 import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
-import { ImageEmbed } from "../../lib/EmbedBuilders";
+import { BasicEmbed, ImageEmbed } from "../../lib/EmbedBuilders";
 import { fetch, FetchResultTypes } from "@sapphire/fetch";
 
 @CustomApplyOptions({
-  name: "waifu",
-  description: "Find your anime wife here!",
-  category: "Anime",
+  name: "fact",
+  description: "Perfect for knowing useless stuff.",
+  aliases: ["uselessfact", "trashfact", "randomfact"],
+  category: "Fun",
 })
 export default class CatCommand extends Command {
   async run(message: Message): Promise<Message> {
     const data: any = await fetch(
-      "https://api.waifu.pics/sfw/waifu",
+      "https://uselessfacts.jsph.pl/random.json?language=en",
       FetchResultTypes.JSON
     );
-
-    const embed = ImageEmbed(data.url).setDescription(
-      ":heart_eyes_cat: **Random Waifu**"
-    );
+    const parsed = data.text.replaceAll("`", "'");
+    const embed = BasicEmbed().setColor("#").setDescription(parsed);
 
     return message.channel.send(embed);
   }

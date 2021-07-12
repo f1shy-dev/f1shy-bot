@@ -18,9 +18,9 @@ export default class CatCommand extends Command {
       FetchResultTypes.JSON
     );
 
-    var embed = ImageEmbed(data.url)
-      .setColor("#0099ff")
-      .setDescription(":heart_eyes_cat: **Random Neko**");
+    const embed = ImageEmbed(data.url).setDescription(
+      ":heart_eyes_cat: **Random Neko**"
+    );
 
     return message.channel.send(embed);
   }
