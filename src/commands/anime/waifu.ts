@@ -6,21 +6,20 @@ import { ImageEmbed } from "../../lib/EmbedBuilders";
 import { fetch, FetchResultTypes } from "@sapphire/fetch";
 
 @CustomApplyOptions({
-  name: "cat",
-  description: "Looking for some fresh pussy? Look no further!",
-  aliases: ["pussy"],
-  category: "Fun",
+  name: "waifu",
+  description: "Find your anime wife here!",
+  category: "Anime",
 })
 export default class CatCommand extends Command {
   async run(message: Message): Promise<Message> {
     const data: any = await fetch(
-      "https://api.thecatapi.com/v1/images/search",
+      "https://api.waifu.pics/sfw/waifu",
       FetchResultTypes.JSON
     );
 
-    var embed = ImageEmbed(data[0].url)
+    var embed = ImageEmbed(data.url)
       .setColor("#0099ff")
-      .setDescription(":cat: **Random Cat**");
+      .setDescription(":heart_eyes_cat: **Random Waifu**");
 
     return message.channel.send(embed);
   }

@@ -1,9 +1,8 @@
-import type { CommandOptions } from "@sapphire/framework";
 import type { Message } from "discord.js";
 import { Command } from "@sapphire/framework";
 
 import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
-import { BasicEmbed, ImageEmbed } from "../../lib/EmbedBuilders";
+import { ImageEmbed } from "../../lib/EmbedBuilders";
 import { fetch, FetchResultTypes } from "@sapphire/fetch";
 
 @CustomApplyOptions({
