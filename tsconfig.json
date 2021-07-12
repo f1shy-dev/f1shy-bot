@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
     "rootDir": "src",
     "outDir": "dist",
     "esModuleInterop": true,
-    "target": "es2018",
+    "target": "esnext",
+    "allowJs": true,
     "moduleResolution": "node"
   }
 }
