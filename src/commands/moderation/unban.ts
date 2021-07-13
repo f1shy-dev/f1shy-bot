@@ -10,6 +10,7 @@ import { ErrorEmbed, SuccessEmbed } from "../../lib/EmbedBuilders";
   category: "Moderation",
   usage: "(User ID)",
   examples: ["928355509870000567"],
+  preconditions: ["GuildOnly"],
 })
 export default class UnBanCommand extends Command {
   async run(message: Message, args: Args): Promise<Message> {

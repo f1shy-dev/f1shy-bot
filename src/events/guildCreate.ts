@@ -4,9 +4,7 @@ import { CustomClient } from "../lib/CustomClient";
 
 export default class GuildCreateEvent extends Event {
   constructor(context: PieceContext) {
-    super(context, {
-      once: true,
-    });
+    super(context);
   }
 
   async run(guild: Guild): Promise<void> {

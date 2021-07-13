@@ -9,6 +9,7 @@ import { join } from "@prisma/client/runtime";
   description: "Shows a list of guild roles!",
   category: "Moderation",
   aliases: ["allroles", "listroles"],
+  preconditions: ["GuildOnly"],
 })
 export default class RolesCommand extends Command {
   async run(message: Message): Promise<Message> {
