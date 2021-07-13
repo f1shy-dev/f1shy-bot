@@ -33,8 +33,9 @@ export default class EvalCommand extends Command {
         );
 
       let evaled = eval(code.value);
-      if (typeof evaled !== "string") evaled = inspect(evaled);
+      if (typeof evaled !== "string") evaled = inspect(evaled, { depth: 1 });
       if (typeof evaled !== "string") throw "Error: Can't print that as text.";
+      if (evaled.constructor.name == "Promise") await evaled;
 
       const resultEmbed = BasicEmbed()
         .setDescription(
