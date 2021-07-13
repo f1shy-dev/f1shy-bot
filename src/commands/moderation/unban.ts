@@ -1,5 +1,5 @@
 import type { Message } from "discord.js";
-import { Args, Command, ,  } from "@sapphire/framework";
+import { Args, Command } from "@sapphire/framework";
 
 import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
 import { ErrorEmbed, SuccessEmbed } from "../../lib/EmbedBuilders";
