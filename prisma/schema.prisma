@@ -29,4 +29,12 @@ model User {
   id          String  @id
   adminGuilds Guild[] @relation("guildAdmins")
   modGuilds   Guild[] @relation("guildMods")
+  isBotOwner  Boolean @default(false)
+}
+
+model BotSettings {
+  id                    Int     @id @default(autoincrement())
+  botOwnerID            String
+  defaultPrefix         String
+  defaultAdvancedErrors Boolean
 }

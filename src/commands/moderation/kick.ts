@@ -29,7 +29,7 @@ export default class BanCommand extends Command {
     } catch {
       return message.channel.send(
         ErrorEmbed(
-          "I can't kick that user, they are on a higher permission level than this bot."
+          "I can't kick that user, they are on a higher/the same permission level to this bot."
         )
       );
     }
