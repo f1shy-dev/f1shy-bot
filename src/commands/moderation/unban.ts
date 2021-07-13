@@ -1,5 +1,5 @@
-import type { Guild, GuildManager, GuildMember, Message } from "discord.js";
-import { Args, Command, Result, UserError } from "@sapphire/framework";
+import type { Message } from "discord.js";
+import { Args, Command, ,  } from "@sapphire/framework";
 
 import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
 import { ErrorEmbed, SuccessEmbed } from "../../lib/EmbedBuilders";
