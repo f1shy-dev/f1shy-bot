@@ -10,7 +10,7 @@ import { fetch, FetchResultTypes } from "@sapphire/fetch";
   description: "You have found the place of everything shinobu!",
   category: "Anime",
 })
-export default class CatCommand extends Command {
+export default class AnimeCommand extends Command {
   async run(message: Message): Promise<Message> {
     const data: any = await fetch(
       "https://api.waifu.pics/sfw/shinobu",

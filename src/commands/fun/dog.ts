@@ -10,7 +10,7 @@ import { fetch, FetchResultTypes } from "@sapphire/fetch";
   description: "Looking for man's best friend? Look no further!",
   category: "Fun",
 })
-export default class CatCommand extends Command {
+export default class DogCommand extends Command {
   async run(message: Message): Promise<Message> {
     const data: any = await fetch(
       "https://api.thedogapi.com/v1/images/search",

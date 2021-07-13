@@ -11,7 +11,7 @@ import { fetch, FetchResultTypes } from "@sapphire/fetch";
   aliases: ["begone"],
   category: "Fun",
 })
-export default class CatCommand extends Command {
+export default class YeetCommand extends Command {
   async run(message: Message): Promise<Message> {
     const data: any = await fetch(
       "https://api.waifu.pics/sfw/yeet",

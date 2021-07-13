@@ -11,7 +11,7 @@ import { fetch, FetchResultTypes } from "@sapphire/fetch";
   aliases: ["nekocat"],
   category: "Anime",
 })
-export default class CatCommand extends Command {
+export default class AnimeCommand extends Command {
   async run(message: Message): Promise<Message> {
     const data: any = await fetch(
       "https://api.waifu.pics/sfw/neko",

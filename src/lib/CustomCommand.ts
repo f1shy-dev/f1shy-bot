@@ -1,3 +1,4 @@
 import { Command } from "@sapphire/framework";
+import { CustomCommandOptions } from "./CustomApplyOptions";
 
-export type CustomCommand = Command & { category: string };
+export type CustomCommand = Command & CustomCommandOptions;

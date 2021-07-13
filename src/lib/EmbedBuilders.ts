@@ -3,12 +3,12 @@ import { MessageEmbed } from "discord.js";
 export const ErrorEmbed = (message: string) =>
   new MessageEmbed()
     .setColor("#E53935")
-    .setDescription("<:cross:806285443062169620> " + message);
+    .setDescription("<:WrongMark:864444373776990228> " + message);
 
 export const SuccessEmbed = (message: string) =>
   new MessageEmbed()
     .setColor("#7CB342")
-    .setDescription("<:success:806285442839609365>  " + message);
+    .setDescription("<:CheckMark:864444373705687070>  " + message);
 
 export const ImageEmbed = (url: string) =>
   new MessageEmbed().setColor("#0099ff").setImage(url);

@@ -11,7 +11,7 @@ import { fetch, FetchResultTypes } from "@sapphire/fetch";
   aliases: ["uselessfact", "trashfact", "randomfact"],
   category: "Fun",
 })
-export default class CatCommand extends Command {
+export default class FactCommand extends Command {
   async run(message: Message): Promise<Message> {
     const data: any = await fetch(
       "https://uselessfacts.jsph.pl/random.json?language=en",

@@ -1,21 +1,78 @@
 import type { Message } from "discord.js";
 import { MessageEmbed } from "discord.js";
 import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
-import { Command } from "@sapphire/framework";
+import { Args, Command } from "@sapphire/framework";
 import { CustomCommand } from "../../lib/CustomCommand";
+import { BasicEmbed, ErrorEmbed } from "../../lib/EmbedBuilders";
 
 @CustomApplyOptions({
   name: "help",
   description: "Get help on a command or show all commands!",
   aliases: ["cmdhelp", "commandhelp", "gethelp"],
   category: "General",
+  usage: "[command/alias name]",
+  examples: ["ping", ""],
 })
 export default class HelpCommand extends Command {
-  async run(message: Message): Promise<Message> {
+  async run(message: Message, args: Args): Promise<Message> {
     const commands = this.context.stores.get("commands") as any as [
       any,
       CustomCommand
     ][];
+
+    const singleCmd = await args.pickResult("string");
+    if (singleCmd.success) {
+      console.log();
+      const allCmds = new Map([
+        ...this.context.stores.get("commands").aliases,
+        ...commands,
+      ]);
+
+      const parsed = allCmds.get(singleCmd.value) as CustomCommand;
+      if (!parsed)
+        return message.channel.send(
+          ErrorEmbed(`The command \`${singleCmd.value}\` doesn't exist!`)
+        );
+
+      let fields = [
+        {
+          name: "Description",
+          value: parsed.description,
+        },
+      ];
+
+      fields.push({
+        name: "Usage",
+        value: `\`${process.env.DEFAULT_PREFIX}${parsed.name}${
+          parsed.usage ? ` ${parsed.usage}` : ""
+        }\``,
+      });
+
+      if (parsed.aliases.length > 0)
+        fields.push({
+          name: "Aliases",
+          value: parsed.aliases.map((e) => `\`${e}\``).join(" "),
+        });
+
+      if (parsed.examples)
+        fields.push({
+          name: "Examples",
+          value: parsed.examples
+            .map(
+              (e) =>
+                `\`${process.env.DEFAULT_PREFIX}${parsed.name}${
+                  e ? " " + e : ""
+                }\``
+            )
+            .join(" "),
+        });
+
+      return message.channel.send(
+        BasicEmbed(`Command Help: \`${parsed.name}\``)
+          .addFields(fields)
+          .setFooter("Arguments in () are required, ones in [] are optional.")
+      );
+    }
     const categoryData: Record<any, string[]> = {};
 
     for (const [, cmd] of commands) {

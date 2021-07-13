@@ -11,7 +11,7 @@ import { fetch, FetchResultTypes } from "@sapphire/fetch";
   aliases: ["flipacoin", "flipcoin"],
   category: "Fun",
 })
-export default class CatCommand extends Command {
+export default class FlipCommand extends Command {
   async run(message: Message): Promise<Message> {
     const chance = Math.floor(Math.random() * 2) == 0;
     const embed = BasicEmbed().setDescription(
