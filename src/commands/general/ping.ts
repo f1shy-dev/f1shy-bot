@@ -3,6 +3,7 @@ import { Command } from "@sapphire/framework";
 
 import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
 import { BasicEmbed } from "../../lib/EmbedBuilders";
+import { CustomClient } from "../../lib/CustomClient";
 
 @CustomApplyOptions({
   name: "ping",

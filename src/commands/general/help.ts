@@ -4,6 +4,8 @@ import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
 import { Args, Command } from "@sapphire/framework";
 import { CustomCommand } from "../../lib/CustomCommand";
 import { BasicEmbed, ErrorEmbed } from "../../lib/EmbedBuilders";
+import { getGuildSettings } from "../../lib/GetSettings";
+import { CustomClient } from "../../lib/CustomClient";
 
 @CustomApplyOptions({
   name: "help",
@@ -19,6 +21,13 @@ export default class HelpCommand extends Command {
       any,
       CustomCommand
     ][];
+
+    const guildPrefix = (
+      await getGuildSettings(
+        (this.context.client as CustomClient).prisma,
+        message?.guild?.id || "69"
+      )
+    )?.prefix;
 
     const singleCmd = await args.pickResult("string");
     if (singleCmd.success) {
@@ -43,7 +52,7 @@ export default class HelpCommand extends Command {
 
       fields.push({
         name: "Usage",
-        value: `\`${process.env.DEFAULT_PREFIX}${parsed.name}${
+        value: `\`${guildPrefix}${parsed.name}${
           parsed.usage ? ` ${parsed.usage}` : ""
         }\``,
       });
@@ -58,12 +67,7 @@ export default class HelpCommand extends Command {
         fields.push({
           name: "Examples",
           value: parsed.examples
-            .map(
-              (e) =>
-                `\`${process.env.DEFAULT_PREFIX}${parsed.name}${
-                  e ? " " + e : ""
-                }\``
-            )
+            .map((e) => `\`${guildPrefix}${parsed.name}${e ? " " + e : ""}\``)
             .join(" "),
         });
 
