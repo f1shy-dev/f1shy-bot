@@ -2,6 +2,7 @@ import { Message, Role } from "discord.js";
 import { Command } from "@sapphire/framework";
 import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
 import { BasicEmbed } from "../../lib/EmbedBuilders";
+import { join } from "@prisma/client/runtime";
 
 @CustomApplyOptions({
   name: "roles",
@@ -15,9 +16,19 @@ export default class RolesCommand extends Command {
       .sort((a, b) => b.position - a.position)
       .filter((r) => r.name !== "@everyone")
       .map((r) => `<@&${r.id}>`);
+
+    let joint = roles?.join("\n") || "Seems like you have no roles!";
+    let extra = 0;
+
+    while (joint?.length > 4000) {
+      roles?.pop();
+      joint = roles?.join("\n") || "Seems like you have no roles!";
+      extra++;
+    }
+
     return await message.channel.send(
       BasicEmbed(`All Roles (${roles?.length})`).setDescription(
-        roles?.join("\n")
+        `${joint}${extra > 0 ? `\n...and ${extra} more.` : ""}`
       )
     );
   }
