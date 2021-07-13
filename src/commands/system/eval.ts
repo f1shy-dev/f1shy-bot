@@ -1,5 +1,6 @@
 import type { Message } from "discord.js";
 import { Args, Command } from "@sapphire/framework";
+import { isThenable } from "@sapphire/utilities";
 import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
 import { CustomClient } from "../../lib/CustomClient";
 import { getDefaultBotSettings } from "../../lib/GetSettings";
@@ -33,9 +34,19 @@ export default class EvalCommand extends Command {
         );
 
       let evaled = eval(code.value);
-      if (typeof evaled !== "string") evaled = inspect(evaled, { depth: 1 });
+
+      if (isThenable(evaled)) evaled = await evaled;
+
+      if (typeof evaled !== "string")
+        evaled = inspect(evaled, { depth: 1, showHidden: true });
+
       if (typeof evaled !== "string") throw "Error: Can't print that as text.";
-      if (evaled.constructor.name == "Promise") await evaled;
+
+      evaled.replaceAll(process.env.DISCORD_TOKEN || "", "__REDACTED__");
+      evaled.replaceAll(process.env.DATABASE_URL || "", "__REDACTED__");
+      evaled.replaceAll(process.env.PM2_PUBLIC_KEY || "", "__REDACTED__");
+      evaled.replaceAll(process.env.PM2_SECRET_KEY || "", "__REDACTED__");
+      evaled.replaceAll(process.env.PGPASSWORD || "", "__REDACTED__");
 
       const resultEmbed = BasicEmbed()
         .setDescription(
