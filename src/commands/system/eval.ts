@@ -1,13 +1,13 @@
 import type { Message } from "discord.js";
 import { Args, Command } from "@sapphire/framework";
 import { isThenable } from "@sapphire/utilities";
-import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
+import { ApplyCommandOptions } from "../../lib/ApplyCommandOptions";
 import { CustomClient } from "../../lib/CustomClient";
 import { getDefaultBotSettings } from "../../lib/GetSettings";
 import { BasicEmbed, ErrorEmbed } from "../../lib/EmbedBuilders";
 import { inspect } from "util";
 import { join } from "path";
-@CustomApplyOptions({
+@ApplyCommandOptions({
   name: "eval",
   description: "Executes arbitrary JavaScript code.",
   category: "System",
@@ -16,7 +16,7 @@ import { join } from "path";
 })
 export default class EvalCommand extends Command {
   async run(message: Message, args: Args): Promise<Message> {
-    const prisma = (this.context.client as CustomClient).prisma;
+    const prisma = (this.context.client as CustomClient).db;
 
     if (
       (await getDefaultBotSettings(prisma))?.botOwnerID !== message.member?.id

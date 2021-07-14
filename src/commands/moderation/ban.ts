@@ -1,10 +1,10 @@
 import type { Message } from "discord.js";
 import { Args, Command } from "@sapphire/framework";
 
-import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
+import { ApplyCommandOptions } from "../../lib/ApplyCommandOptions";
 import { ErrorEmbed, SuccessEmbed } from "../../lib/EmbedBuilders";
 
-@CustomApplyOptions({
+@ApplyCommandOptions({
   name: "ban",
   description: "Permamently ban a member from your guild.",
   category: "Moderation",

@@ -1,11 +1,11 @@
 import type { Message } from "discord.js";
 import { Command } from "@sapphire/framework";
 
-import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
+import { ApplyCommandOptions } from "../../lib/ApplyCommandOptions";
 import { ImageEmbed } from "../../lib/EmbedBuilders";
 import { fetch, FetchResultTypes } from "@sapphire/fetch";
 
-@CustomApplyOptions({
+@ApplyCommandOptions({
   name: "shinobu",
   description: "You have found the place of everything shinobu!",
   category: "Anime",

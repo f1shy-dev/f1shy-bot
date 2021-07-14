@@ -1,11 +1,11 @@
 import type { Message } from "discord.js";
 import { Command } from "@sapphire/framework";
 
-import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
+import { ApplyCommandOptions } from "../../lib/ApplyCommandOptions";
 import { BasicEmbed } from "../../lib/EmbedBuilders";
 import { CustomClient } from "../../lib/CustomClient";
 
-@CustomApplyOptions({
+@ApplyCommandOptions({
   name: "ping",
   description: "Sends back the ping of the bot!",
   category: "General",

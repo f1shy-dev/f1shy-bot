@@ -8,7 +8,7 @@ export type CustomCommandOptions = CommandOptions & {
 };
 
 type F = (optionsOrFn: CustomCommandOptions) => ClassDecorator;
-export const CustomApplyOptions: F = (options) => (C) => {
+export const ApplyCommandOptions: F = (options) => (C) => {
   const c = ApplyOptions(options)(C) || C;
 
   Object.assign(c.prototype, options);

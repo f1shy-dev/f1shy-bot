@@ -1,10 +1,10 @@
 import { Message, Role } from "discord.js";
 import { Command } from "@sapphire/framework";
-import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
+import { ApplyCommandOptions } from "../../lib/ApplyCommandOptions";
 import { BasicEmbed } from "../../lib/EmbedBuilders";
 import { join } from "@prisma/client/runtime";
 
-@CustomApplyOptions({
+@ApplyCommandOptions({
   name: "roles",
   description: "Shows a list of guild roles!",
   category: "Moderation",

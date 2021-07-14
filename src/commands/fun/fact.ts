@@ -1,11 +1,11 @@
 import type { Message } from "discord.js";
 import { Command } from "@sapphire/framework";
 
-import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
+import { ApplyCommandOptions } from "../../lib/ApplyCommandOptions";
 import { BasicEmbed, ImageEmbed } from "../../lib/EmbedBuilders";
 import { fetch, FetchResultTypes } from "@sapphire/fetch";
 
-@CustomApplyOptions({
+@ApplyCommandOptions({
   name: "fact",
   description: "Perfect for knowing useless stuff.",
   aliases: ["uselessfact", "trashfact", "randomfact"],

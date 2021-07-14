@@ -1,14 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
-export const getDefaultBotSettings = async (prisma: PrismaClient) => {
-  return await prisma.botSettings.findFirst({
-    select: {
-      defaultPrefix: true,
-      defaultAdvancedErrors: true,
-      botOwnerID: true,
-    },
-  });
-};
+export const getDefaultBotSettings = async (prisma: PrismaClient) =>
+  await prisma.botSettings.findFirst();
 
 export const getGuildSettings = async (
   prisma: PrismaClient,

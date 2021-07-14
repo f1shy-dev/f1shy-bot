@@ -8,7 +8,7 @@ export default class GuildCreateEvent extends Event {
   }
 
   async run(guild: Guild): Promise<void> {
-    const prisma = (this.context.client as CustomClient).prisma;
+    const prisma = (this.context.client as CustomClient).db;
     const admins = (await prisma.user.findUnique({
       where: { id: guild.ownerID },
     }))

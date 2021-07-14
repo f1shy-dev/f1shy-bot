@@ -1,13 +1,13 @@
 import type { Message } from "discord.js";
 import { MessageEmbed } from "discord.js";
-import { CustomApplyOptions } from "../../lib/CustomApplyOptions";
+import { ApplyCommandOptions } from "../../lib/ApplyCommandOptions";
 import { Args, Command } from "@sapphire/framework";
 import { CustomCommand } from "../../lib/CustomCommand";
 import { BasicEmbed, ErrorEmbed } from "../../lib/EmbedBuilders";
 import { getGuildSettings } from "../../lib/GetSettings";
 import { CustomClient } from "../../lib/CustomClient";
 
-@CustomApplyOptions({
+@ApplyCommandOptions({
   name: "help",
   description: "Get help on a command or show all commands!",
   aliases: ["cmdhelp", "commandhelp", "gethelp"],
@@ -24,7 +24,7 @@ export default class HelpCommand extends Command {
 
     const guildPrefix = (
       await getGuildSettings(
-        (this.context.client as CustomClient).prisma,
+        (this.context.client as CustomClient).db,
         message?.guild?.id || "69"
       )
     )?.prefix;
