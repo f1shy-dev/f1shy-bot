@@ -19,6 +19,6 @@ export default class FactCommand extends Command {
     );
     const embed = BasicEmbed().setColor("#").setDescription(data);
 
-    return message.channel.send(embed);
+    return message.channel.send({ embeds: [embed] });
   }
 }

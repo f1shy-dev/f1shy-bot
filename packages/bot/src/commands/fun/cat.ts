@@ -22,6 +22,6 @@ export default class CatCommand extends Command {
       ":cat: **Random Cat**"
     );
 
-    return message.channel.send(embed);
+    return message.channel.send({ embeds: [embed] });
   }
 }

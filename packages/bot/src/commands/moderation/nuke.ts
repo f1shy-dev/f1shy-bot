@@ -14,32 +14,38 @@ import { Channel } from "discord.js";
 })
 export default class BanCommand extends Command {
   async run(message: Message, args: Args): Promise<Channel | Message> {
-    if (!message?.member?.hasPermission("MANAGE_CHANNELS"))
-      return message.channel.send(
-        ErrorEmbed("You don't have the required permissions to do that.")
-      );
+    if (!message?.member?.permissions.has("MANAGE_CHANNELS"))
+      return message.channel.send({
+        embeds: [
+          ErrorEmbed("You don't have the required permissions to do that."),
+        ],
+      });
 
     try {
       (message.channel as TextChannel)
         .clone({ position: (message.channel as TextChannel).rawPosition })
         .then((ch) => {
-          ch.send(
-            BasicEmbed()
-              .setAuthor(
-                "This channel was nuked.",
-                "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Nuclear_symbol.svg/1200px-Nuclear_symbol.svg.png"
-              )
-              .setFooter(
-                "Note: Nuking a channel changes it's ID and revokes webhooks."
-              )
-          ).then((msg) => setTimeout(() => msg.delete(), 5000));
+          ch.send({
+            embeds: [
+              BasicEmbed()
+                .setAuthor(
+                  "This channel was nuked.",
+                  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Nuclear_symbol.svg/1200px-Nuclear_symbol.svg.png"
+                )
+                .setFooter(
+                  "Note: Nuking a channel changes it's ID and revokes webhooks."
+                ),
+            ],
+          }).then((msg) => setTimeout(() => msg.delete(), 5000));
         });
 
       return message.channel.delete();
     } catch {
-      return message.channel.send(
-        ErrorEmbed("I don't have the permission to nuke this channel.")
-      );
+      return message.channel.send({
+        embeds: [
+          ErrorEmbed("I don't have the permission to nuke this channel."),
+        ],
+      });
     }
   }
 }

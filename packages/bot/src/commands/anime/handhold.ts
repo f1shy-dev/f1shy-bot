@@ -21,6 +21,6 @@ export default class AnimeCommand extends Command {
       ":handshake:  **Random Handhold**"
     );
 
-    return message.channel.send(embed);
+    return message.channel.send({ embeds: [embed] });
   }
 }

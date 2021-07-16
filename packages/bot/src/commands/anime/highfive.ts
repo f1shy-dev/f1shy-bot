@@ -19,6 +19,6 @@ export default class AnimeCommand extends Command {
 
     const embed = ImageEmbed(data.url).setDescription(":clap: **High-five!**");
 
-    return message.channel.send(embed);
+    return message.channel.send({ embeds: [embed] });
   }
 }

@@ -21,6 +21,6 @@ export default class DogCommand extends Command {
       ":dog: **Random Dog**"
     );
 
-    return message.channel.send(embed);
+    return message.channel.send({ embeds: [embed] });
   }
 }

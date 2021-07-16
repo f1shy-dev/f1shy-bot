@@ -15,23 +15,29 @@ import { ErrorEmbed, SuccessEmbed } from "../../lib/EmbedBuilders";
 export default class UnBanCommand extends Command {
   async run(message: Message, args: Args): Promise<Message> {
     const member = args.next();
-    if (!message?.member?.hasPermission("BAN_MEMBERS"))
-      return message.channel.send(
-        ErrorEmbed("You don't have the required permissions to do that.")
-      );
+    if (!message?.member?.permissions.has("BAN_MEMBERS"))
+      return message.channel.send({
+        embeds: [
+          ErrorEmbed("You don't have the required permissions to do that."),
+        ],
+      });
 
-    const banList = await message?.guild?.fetchBans();
+    const banList = await message?.guild?.bans.fetch();
 
-    const bannedUser = banList?.find((user) => user.user.id === member);
+    const bannedUser = banList?.find((user) => user.user.id === member)?.user;
     if (!bannedUser)
-      return message.channel.send(
-        ErrorEmbed("That isn't the ID of a valid banned member in this guild!")
-      );
+      return message.channel.send({
+        embeds: [
+          ErrorEmbed(
+            "That isn't the ID of a valid banned member in this guild!"
+          ),
+        ],
+      });
 
-    message?.guild?.members.unban(member);
+    message?.guild?.members.unban(bannedUser);
 
-    return await message.channel.send(
-      SuccessEmbed(`<@${member}> was unbanned successfully!`)
-    );
+    return await message.channel.send({
+      embeds: [SuccessEmbed(`<@${member}> was unbanned successfully!`)],
+    });
   }
 }

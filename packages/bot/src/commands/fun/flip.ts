@@ -18,6 +18,6 @@ export default class FlipCommand extends Command {
       `The :coin: reads **${chance ? "heads!" : "tails!"}**`
     );
 
-    return message.channel.send(embed);
+    return message.channel.send({ embeds: [embed] });
   }
 }

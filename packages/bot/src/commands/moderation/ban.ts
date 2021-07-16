@@ -19,27 +19,31 @@ export default class BanCommand extends Command {
       .pickResult("string")
       .then((e) => e.value || "N/A");
     if (!member.success)
-      return await message.channel.send(
-        ErrorEmbed("You must provide a valid member to ban!")
-      );
+      return await message.channel.send({
+        embeds: [ErrorEmbed("You must provide a valid member to ban!")],
+      });
 
-    if (!message?.member?.hasPermission("BAN_MEMBERS"))
-      return message.channel.send(
-        ErrorEmbed("You don't have the required permissions to do that.")
-      );
+    if (!message?.member?.permissions.has("BAN_MEMBERS"))
+      return message.channel.send({
+        embeds: [
+          ErrorEmbed("You don't have the required permissions to do that."),
+        ],
+      });
 
     try {
       await member.value.ban({ reason });
     } catch {
-      return message.channel.send(
-        ErrorEmbed(
-          "I can't ban that user, they are on a higher/the same permission level to this bot."
-        )
-      );
+      return message.channel.send({
+        embeds: [
+          ErrorEmbed(
+            "I can't ban that user, they are on a higher/the same permission level to this bot."
+          ),
+        ],
+      });
     }
 
-    return await message.channel.send(
-      SuccessEmbed(`<@${member.value.id}> was banned successfully!`)
-    );
+    return await message.channel.send({
+      embeds: [SuccessEmbed(`<@${member.value.id}> was banned successfully!`)],
+    });
   }
 }

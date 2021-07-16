@@ -1,27 +1,32 @@
-import type { Message } from "discord.js";
-import { MessageEmbed } from "discord.js";
+import {
+  Message,
+  MessageActionRow,
+  MessageButton,
+  MessageSelectMenu,
+  SelectMenuInteraction,
+  TextChannel,
+} from "discord.js";
 import { ApplyCustomOptions } from "../../lib/ApplyCustomOptions";
-import { Args, Command } from "@sapphire/framework";
+import { AliasStore, Args, Command } from "@sapphire/framework";
 import { CustomCommand } from "../../structures/CustomCommand";
-import { BasicEmbed, ErrorEmbed } from "../../lib/EmbedBuilders";
+import { BasicEmbed, ErrorEmbed, InfoEmbed } from "../../lib/EmbedBuilders";
 import { getGuildSettings } from "../../lib/GetSettings";
 import { CustomClient } from "../../structures/CustomClient";
 import { categoryEmojis } from "../../lib/CategoryEmojis";
-import { fetch, FetchResultTypes } from "@sapphire/fetch";
+import { nanoid } from "nanoid";
+
 @ApplyCustomOptions({
   name: "help",
-  description: "Get help on a command or show all commands!",
-  aliases: ["cmdhelp", "commandhelp", "gethelp"],
+  description: "Get help on a individual command, or get info on all commands!",
   category: "General",
   usage: "[command/alias name]",
   examples: ["ping", ""],
 })
 export default class HelpCommand extends Command {
-  async run(message: Message, args: Args): Promise<Message> {
-    const commands = this.context.stores.get("commands") as any as [
-      any,
-      CustomCommand
-    ][];
+  async run(message: Message, args: Args): Promise<any> {
+    const commands = this.context.stores.get(
+      "commands"
+    ) as AliasStore<CustomCommand>;
 
     const guildPrefix = (
       await getGuildSettings(
@@ -40,9 +45,11 @@ export default class HelpCommand extends Command {
 
       const parsed = allCmds.get(singleCmd.value) as CustomCommand;
       if (!parsed)
-        return message.channel.send(
-          ErrorEmbed(`The command \`${singleCmd.value}\` doesn't exist!`)
-        );
+        return message.channel.send({
+          embeds: [
+            ErrorEmbed(`The command \`${singleCmd.value}\` doesn't exist!`),
+          ],
+        });
 
       let fields = [
         {
@@ -57,13 +64,13 @@ export default class HelpCommand extends Command {
         },
       ];
 
-      if (parsed.aliases.length > 0)
+      parsed.aliases.length > 0 &&
         fields.push({
           name: "Aliases",
           value: parsed.aliases.map((e: string) => `\`${e}\``).join(" "),
         });
 
-      if (parsed.examples)
+      parsed.examples &&
         fields.push({
           name: "Examples",
           value: parsed.examples
@@ -74,15 +81,23 @@ export default class HelpCommand extends Command {
             .join(" "),
         });
 
-      return message.channel.send(
-        BasicEmbed(
-          `${categoryEmojis[parsed.category]} Command Help: \`${parsed.name}\``
-        )
-          .addFields(fields)
-          .setFooter("Arguments in () are required, ones in [] are optional.")
-      );
+      return message.channel.send({
+        embeds: [
+          BasicEmbed(
+            "",
+            `${categoryEmojis[parsed.category]} Command Help: \`${
+              parsed.name
+            }\``
+          )
+            .addFields(fields)
+            .setFooter(
+              "Arguments in () are required, ones in [] are optional."
+            ),
+        ],
+      });
     }
-    const categoryData: Record<any, string[]> = {};
+
+    const categoryData: Record<string, string[]> = {};
 
     for (const [, cmd] of commands) {
       (categoryData[cmd.category] || (categoryData[cmd.category] = [])).push(
@@ -90,28 +105,67 @@ export default class HelpCommand extends Command {
       );
     }
 
-    const fields = Object.keys(categoryData)
-      .sort((a, b) => a.localeCompare(b))
-      .map((catKey) => {
-        const value = categoryData[catKey]
-          .map((name: string) => `\`${name}\``)
-          .sort((a, b) => a.localeCompare(b))
-          .join(", ");
-        return `${categoryEmojis[catKey]} **${catKey}** - ${value}`;
-      });
+    const id = nanoid();
+    const select = new MessageActionRow().addComponents(
+      new MessageSelectMenu()
+        .setCustomId(id)
+        .setPlaceholder("Categories")
+        .addOptions(
+          Object.keys(categoryData).map((k) => ({
+            value: k,
+            label: k,
+            emoji: categoryEmojis[k],
+          }))
+        )
+    );
 
-    const HelpEmbed = new MessageEmbed()
-      .setAuthor(
-        "F1shyBot Command List",
-        this.context.client.user?.avatarURL() || ""
-      )
-      .setColor("BLUE")
-      .setDescription(
-        `**Run \`${guildPrefix}help [command name]\` for information on a individual command.**\n\n${fields.join(
-          "\n\n"
-        )}`
+    const msg = await message.channel.send({
+      content: "Pick one of the categories below to get a list of commands!",
+      components: [select],
+    });
+    const filter = (i: SelectMenuInteraction) =>
+      i.customId === id && i.user.id === message.author.id;
+    const collector = message.channel.createMessageComponentCollector({
+      filter,
+      idle: 30000,
+    });
+
+    collector.on("collect", (i) => {
+      if (!i.isSelectMenu()) return;
+      const selected = i.values[0];
+      const embed = BasicEmbed(
+        "",
+        `${categoryEmojis[selected]} ${selected} commands.`
+      ).addFields(
+        Object.keys(categoryData[selected]).map((c) => {
+          const cmd = categoryData[selected][Number(c)];
+          const fullCmd = this.context.client.stores
+            .get("commands")
+            .get(cmd) as CustomCommand;
+          return {
+            name: `\`${guildPrefix}${cmd}${
+              fullCmd.usage ? " " + fullCmd.usage : ""
+            }\``,
+            value: fullCmd?.description || "N/A",
+          };
+        })
       );
 
-    return await message.channel.send(HelpEmbed);
+      i.deferUpdate();
+
+      msg.edit({
+        embeds: [embed],
+        components: [select],
+      });
+    });
+    collector.on("end", () => {
+      msg.edit({
+        embeds: [InfoEmbed("This interaction has ended.")],
+        components: [],
+        content: "\u200b",
+      });
+    });
+
+    return;
   }
 }

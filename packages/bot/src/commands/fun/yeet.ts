@@ -22,6 +22,6 @@ export default class YeetCommand extends Command {
       "<:yeet:864266431868698625> **YEET!**"
     );
 
-    return message.channel.send(embed);
+    return message.channel.send({ embeds: [embed] });
   }
 }

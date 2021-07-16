@@ -20,6 +20,6 @@ export default class FactCommand extends Command {
     const parsed = data.text.replaceAll("`", "'");
     const embed = BasicEmbed().setColor("#").setDescription(parsed);
 
-    return message.channel.send(embed);
+    return message.channel.send({ embeds: [embed] });
   }
 }

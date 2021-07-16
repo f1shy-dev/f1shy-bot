@@ -21,6 +21,6 @@ export default class AnimeCommand extends Command {
       ":purple_heart: **Random Shinobu**"
     );
 
-    return message.channel.send(embed);
+    return message.channel.send({ embeds: [embed] });
   }
 }

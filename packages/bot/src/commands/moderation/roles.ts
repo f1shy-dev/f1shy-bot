@@ -27,10 +27,12 @@ export default class RolesCommand extends Command {
       extra++;
     }
 
-    return await message.channel.send(
-      BasicEmbed(`All Roles (${roles?.length})`).setDescription(
-        `${joint}${extra > 0 ? `\n...and ${extra} more.` : ""}`
-      )
-    );
+    return await message.channel.send({
+      embeds: [
+        BasicEmbed(`All Roles (${roles?.length})`).setDescription(
+          `${joint}${extra > 0 ? `\n...and ${extra} more.` : ""}`
+        ),
+      ],
+    });
   }
 }

@@ -10,12 +10,12 @@ export default class GuildCreateEvent extends Event {
   async run(guild: Guild): Promise<void> {
     const prisma = (this.context.client as CustomClient).db;
     const admins = (await prisma.user.findUnique({
-      where: { id: guild.ownerID },
+      where: { id: guild.ownerId },
     }))
-      ? { connect: [{ id: guild.ownerID }] }
+      ? { connect: [{ id: guild.ownerId }] }
       : {
           create: {
-            id: guild.ownerID,
+            id: guild.ownerId,
             isBotOwner: false,
           },
         };

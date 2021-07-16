@@ -21,17 +21,17 @@ export default class EvalCommand extends Command {
     if (
       (await getDefaultBotSettings(prisma))?.botOwnerID !== message.member?.id
     )
-      return message.channel.send(
-        ErrorEmbed("You don't have the permissions to do that!")
-      );
+      return message.channel.send({
+        embeds: [ErrorEmbed("You don't have the permissions to do that!")],
+      });
 
     const code = await args.restResult("string");
 
     try {
       if (!code.success)
-        return message.channel.send(
-          ErrorEmbed("You must provide some code to run.")
-        );
+        return message.channel.send({
+          embeds: [ErrorEmbed("You must provide some code to run.")],
+        });
 
       let evaled = eval(code.value);
 
@@ -63,7 +63,7 @@ export default class EvalCommand extends Command {
         );
 
       // return message.channel.send(clean(evaled), { code: "js" });
-      return message.channel.send(resultEmbed);
+      return message.channel.send({ embeds: [resultEmbed] });
     } catch (err) {
       const errEmbed = BasicEmbed().setDescription(
         `**Executed Code**
@@ -74,7 +74,7 @@ export default class EvalCommand extends Command {
           clean(`${err}`).length > 3950 ? "..." : ""
         }\n\`\`\``
       );
-      return message.channel.send(errEmbed);
+      return message.channel.send({ embeds: [errEmbed] });
     }
   }
 }

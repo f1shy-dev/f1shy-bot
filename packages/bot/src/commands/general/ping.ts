@@ -12,11 +12,13 @@ import { CustomClient } from "../../structures/CustomClient";
 })
 export default class PingCommand extends Command {
   async run(message: Message): Promise<Message> {
-    return await message.channel.send(
-      BasicEmbed(":ping_pong: Pong!").setDescription(
-        `Bot Latency: \`${this.context.client.ws.ping}ms\`
+    return await message.channel.send({
+      embeds: [
+        BasicEmbed(":ping_pong: Pong!").setDescription(
+          `Bot Latency: \`${this.context.client.ws.ping}ms\`
           API Latency: \`${Date.now() - message.createdTimestamp}ms\``
-      )
-    );
+        ),
+      ],
+    });
   }
 }

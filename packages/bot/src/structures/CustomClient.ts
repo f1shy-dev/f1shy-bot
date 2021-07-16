@@ -1,9 +1,10 @@
 import { BotSettings, PrismaClient } from "@prisma/client";
-import { SapphireClient } from "@sapphire/framework";
-import { ClientOptions } from "discord.js";
+import { SapphireClient, SapphireClientOptions } from "@sapphire/framework";
+
 import { getGuildSettings } from "../lib/GetSettings";
 import { join } from "path";
 import "@sapphire/plugin-api/register";
+import { Intents } from "discord.js";
 
 export class CustomClient extends SapphireClient {
   public db: PrismaClient;
@@ -12,7 +13,7 @@ export class CustomClient extends SapphireClient {
   constructor(
     db: PrismaClient,
     settings: BotSettings | null,
-    options?: ClientOptions
+    options?: SapphireClientOptions
   ) {
     const webURL =
       process.env.NODE_ENV === "development"
@@ -20,6 +21,13 @@ export class CustomClient extends SapphireClient {
         : process.env.WEB_URL;
 
     super({
+      intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.DIRECT_MESSAGES,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_MEMBERS,
+        Intents.FLAGS.GUILD_BANS,
+      ],
       caseInsensitiveCommands: true,
       fetchPrefix: async (message) => {
         const guildID = message.guild?.id;
