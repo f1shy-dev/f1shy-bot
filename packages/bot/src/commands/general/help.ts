@@ -6,7 +6,8 @@ import { CustomCommand } from "../../structures/CustomCommand";
 import { BasicEmbed, ErrorEmbed } from "../../lib/EmbedBuilders";
 import { getGuildSettings } from "../../lib/GetSettings";
 import { CustomClient } from "../../structures/CustomClient";
-
+import { categoryEmojis } from "../../lib/CategoryEmojis";
+import { fetch, FetchResultTypes } from "@sapphire/fetch";
 @ApplyCustomOptions({
   name: "help",
   description: "Get help on a command or show all commands!",
@@ -48,14 +49,13 @@ export default class HelpCommand extends Command {
           name: "Description",
           value: parsed.description,
         },
+        {
+          name: "Usage",
+          value: `\`${guildPrefix}${parsed.name}${
+            parsed.usage ? ` ${parsed.usage}` : ""
+          }\``,
+        },
       ];
-
-      fields.push({
-        name: "Usage",
-        value: `\`${guildPrefix}${parsed.name}${
-          parsed.usage ? ` ${parsed.usage}` : ""
-        }\``,
-      });
 
       if (parsed.aliases.length > 0)
         fields.push({
@@ -75,7 +75,9 @@ export default class HelpCommand extends Command {
         });
 
       return message.channel.send(
-        BasicEmbed(`Command Help: \`${parsed.name}\``)
+        BasicEmbed(
+          `${categoryEmojis[parsed.category]} Command Help: \`${parsed.name}\``
+        )
           .addFields(fields)
           .setFooter("Arguments in () are required, ones in [] are optional.")
       );
@@ -88,20 +90,27 @@ export default class HelpCommand extends Command {
       );
     }
 
-    const fields = Object.keys(categoryData).map((catKey) => {
-      const value = categoryData[catKey]
-        .map((name: string) => `\`${name}\``)
-        .join(" ");
-      return { name: catKey, value: value };
-    });
+    const fields = Object.keys(categoryData)
+      .sort((a, b) => a.localeCompare(b))
+      .map((catKey) => {
+        const value = categoryData[catKey]
+          .map((name: string) => `\`${name}\``)
+          .sort((a, b) => a.localeCompare(b))
+          .join(", ");
+        return `${categoryEmojis[catKey]} **${catKey}** - ${value}`;
+      });
 
     const HelpEmbed = new MessageEmbed()
       .setAuthor(
-        "All F1shyBot Commands",
+        "F1shyBot Command List",
         this.context.client.user?.avatarURL() || ""
       )
       .setColor("BLUE")
-      .addFields(fields);
+      .setDescription(
+        `**Run \`${guildPrefix}help [command name]\` for information on a individual command.**\n\n${fields.join(
+          "\n\n"
+        )}`
+      );
 
     return await message.channel.send(HelpEmbed);
   }
