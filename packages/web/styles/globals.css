@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@layer components {
+  .bg-gradient-bubble {
+    background: radial-gradient(ellipse at right, #54d6db, transparent),
+      radial-gradient(ellipse at left, #1269e6, transparent),
+      radial-gradient(ellipse at bottom, #9054db, transparent),
+      radial-gradient(ellipse at top, #54db69, transparent);
+  }
+
+  .blur-box {
+    box-shadow: inset 0 0 10px 2.5px;
+  }
+}
