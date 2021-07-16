@@ -14,7 +14,7 @@
     "dev": "run-p dev:*",
     "start": "run-p start:",
     "clean": "yarn workspaces run clean",
-    "build": "yarn db:generate yarn workspaces run build",
+    "build": "yarn db:generate && yarn workspaces run build",
     "db:generate": "prisma generate"
   },
   "keywords": [],
