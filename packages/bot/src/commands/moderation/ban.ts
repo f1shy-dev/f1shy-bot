@@ -8,7 +8,7 @@ import { ErrorEmbed, SuccessEmbed } from "../../lib/EmbedBuilders";
   name: "ban",
   description: "Permamently ban a member from your guild.",
   category: "Moderation",
-  usage: "(User to ban) [Reason]",
+  usage: "(member) [reason]",
   examples: ["@Steve Absuing rules.", "@Bob"],
   preconditions: ["GuildOnly"],
 })

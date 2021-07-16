@@ -19,7 +19,7 @@ import { nanoid } from "nanoid";
   name: "help",
   description: "Get help on a individual command, or get info on all commands!",
   category: "General",
-  usage: "[command/alias name]",
+  usage: "[command/alias]",
   examples: ["ping", ""],
 })
 export default class HelpCommand extends Command {

@@ -13,6 +13,7 @@ import { join } from "path";
   category: "System",
   aliases: ["runjavascript", "runjs", "raweval"],
   quotes: [],
+  usage: "(js code)",
 })
 export default class EvalCommand extends Command {
   async run(message: Message, args: Args): Promise<Message> {

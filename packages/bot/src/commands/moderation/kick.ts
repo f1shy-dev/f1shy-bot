@@ -8,7 +8,7 @@ import { ErrorEmbed, SuccessEmbed } from "../../lib/EmbedBuilders";
   name: "kick",
   description: "Remove a member from your guild.",
   category: "Moderation",
-  usage: "(User to kick)",
+  usage: "(member)",
   examples: ["@Steve"],
   preconditions: ["GuildOnly"],
 })
