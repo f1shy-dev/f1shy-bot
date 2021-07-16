@@ -26,7 +26,8 @@ export default class GuildCreateEvent extends Event {
         admins,
         settings: {
           create: {
-            prefix: process.env.DEFAULT_PREFIX,
+            prefix: (this.context.client as CustomClient).settings
+              ?.defaultPrefix,
             advancedErrors: false,
           },
         },
