@@ -1,25 +1,17 @@
-import type { Message } from "discord.js";
-import { Command } from "@sapphire/framework";
+import { BasicEmbed } from "../../lib/EmbedBuilders";
+import { PieceContext } from "@sapphire/framework";
+import { FetchCommand } from "../../structures/FetchCommand";
 
-import { ApplyCustomOptions } from "../../lib/ApplyCustomOptions";
-import { BasicEmbed, ImageEmbed } from "../../lib/EmbedBuilders";
-import { fetch, FetchResultTypes } from "@sapphire/fetch";
-
-@ApplyCustomOptions({
-  name: "fact",
-  description: "Perfect for knowing useless stuff.",
-  aliases: ["uselessfact", "trashfact", "randomfact"],
-  category: "Fun",
-})
-export default class FactCommand extends Command {
-  async run(message: Message): Promise<Message> {
-    const data: any = await fetch(
-      "https://uselessfacts.jsph.pl/random.json?language=en",
-      FetchResultTypes.JSON
-    );
-    const parsed = data.text.replaceAll("`", "'");
-    const embed = BasicEmbed().setColor("#").setDescription(parsed);
-
-    return message.channel.send({ embeds: [embed] });
+export default class FactCommand extends FetchCommand {
+  constructor(context: PieceContext) {
+    super(context, {
+      name: "fact",
+      apiURL: "https://uselessfacts.jsph.pl/random.json?language=en",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+      dataParser: (data) => data.text.replaceAll("`", "'"),
+      description: "Perfect for knowing useless stuff.",
+      category: "Fun",
+      embedParser: (data) => BasicEmbed(data).setColor("RANDOM"),
+    });
   }
 }

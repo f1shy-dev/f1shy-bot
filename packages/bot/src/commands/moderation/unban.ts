@@ -1,18 +1,22 @@
 import type { Message } from "discord.js";
-import { Args, Command } from "@sapphire/framework";
+import { Args } from "@sapphire/framework";
 
-import { ApplyCustomOptions } from "../../lib/ApplyCustomOptions";
 import { ErrorEmbed, SuccessEmbed } from "../../lib/EmbedBuilders";
+import {
+  CustomCommand,
+  CustomCommandOptions,
+} from "../../structures/CustomCommand";
+import { ApplyOptions } from "@sapphire/decorators";
 
-@ApplyCustomOptions({
+@ApplyOptions<CustomCommandOptions>({
   name: "unban",
   description: "Unban a member from your guild.",
   category: "Moderation",
-  usage: "(User ID)",
+  argString: "(user ID)",
   examples: ["928355509870000567"],
   preconditions: ["GuildOnly"],
 })
-export default class UnBanCommand extends Command {
+export default class UnBanCommand extends CustomCommand {
   async run(message: Message, args: Args): Promise<Message> {
     const member = args.next();
     if (!message?.member?.permissions.has("BAN_MEMBERS"))

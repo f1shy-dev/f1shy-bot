@@ -1,18 +1,22 @@
 import type { Message } from "discord.js";
-import { Args, Command } from "@sapphire/framework";
+import { Args } from "@sapphire/framework";
 
-import { ApplyCustomOptions } from "../../lib/ApplyCustomOptions";
 import { ErrorEmbed, SuccessEmbed } from "../../lib/EmbedBuilders";
+import {
+  CustomCommand,
+  CustomCommandOptions,
+} from "../../structures/CustomCommand";
+import { ApplyOptions } from "@sapphire/decorators";
 
-@ApplyCustomOptions({
+@ApplyOptions<CustomCommandOptions>({
   name: "kick",
   description: "Remove a member from your guild.",
   category: "Moderation",
-  usage: "(member)",
+  argString: "(member)",
   examples: ["@Steve"],
   preconditions: ["GuildOnly"],
 })
-export default class BanCommand extends Command {
+export default class BanCommand extends CustomCommand {
   async run(message: Message, args: Args): Promise<Message> {
     const member = await args.pickResult("member");
     if (!member.success)

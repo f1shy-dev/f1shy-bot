@@ -14,11 +14,11 @@ export default class GuildCreateEvent extends Event {
     }))
       ? { connect: [{ id: guild.ownerId }] }
       : {
-          create: {
-            id: guild.ownerId,
-            isBotOwner: false,
-          },
-        };
+        create: {
+          id: guild.ownerId,
+          isBotOwner: false,
+        },
+      };
 
     await prisma.guild.create({
       data: {

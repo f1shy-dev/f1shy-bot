@@ -1,21 +1,26 @@
 import type { Message } from "discord.js";
-import { Args, Command } from "@sapphire/framework";
+import { Args } from "@sapphire/framework";
 import { isThenable } from "@sapphire/utilities";
-import { ApplyCustomOptions } from "../../lib/ApplyCustomOptions";
 import { CustomClient } from "../../structures/CustomClient";
 import { getDefaultBotSettings } from "../../lib/GetSettings";
 import { BasicEmbed, ErrorEmbed } from "../../lib/EmbedBuilders";
 import { inspect } from "util";
 import { join } from "path";
-@ApplyCustomOptions({
+import {
+  CustomCommand,
+  CustomCommandOptions,
+} from "../../structures/CustomCommand";
+import { ApplyOptions } from "@sapphire/decorators";
+
+@ApplyOptions<CustomCommandOptions>({
   name: "eval",
   description: "Executes arbitrary JavaScript code.",
   category: "System",
   aliases: ["runjavascript", "runjs", "raweval"],
   quotes: [],
-  usage: "(js code)",
+  argString: "(js code)",
 })
-export default class EvalCommand extends Command {
+export default class EvalCommand extends CustomCommand {
   async run(message: Message, args: Args): Promise<Message> {
     const prisma = (this.context.client as CustomClient).db;
 
@@ -43,11 +48,18 @@ export default class EvalCommand extends Command {
 
       if (typeof evaled !== "string") throw "Error: Can't print that as text.";
 
-      evaled.replaceAll(process.env.DISCORD_TOKEN || "", "__REDACTED__");
-      evaled.replaceAll(process.env.DATABASE_URL || "", "__REDACTED__");
-      evaled.replaceAll(process.env.PM2_PUBLIC_KEY || "", "__REDACTED__");
-      evaled.replaceAll(process.env.PM2_SECRET_KEY || "", "__REDACTED__");
-      evaled.replaceAll(process.env.PGPASSWORD || "", "__REDACTED__");
+      let strEvaled = evaled as string;
+
+      ["DISCORD_TOKEN", "DATABASE_URL", "CLIENT_SECRET", "CLIENT_ID"].forEach(
+        (v) =>
+          (strEvaled = strEvaled.replaceAll(
+            process.env[v] || "UNKNOWN_XX",
+            "[REDACTED]"
+          ))
+      );
+      const result =
+        clean(strEvaled).substring(0, 3950) +
+        (clean(strEvaled).length > 3950 ? "..." : "");
 
       const resultEmbed = BasicEmbed()
         .setDescription(
@@ -55,9 +67,7 @@ export default class EvalCommand extends Command {
           \`${code.value}\`
 
           **Result**
-          \`\`\`js\n${clean(evaled).substring(0, 3950)}${
-            clean(evaled).length > 3950 ? "..." : ""
-          }\n\`\`\``
+          \`\`\`js\n${result}\n\`\`\``
         )
         .setFooter(
           "This code is ran locally (on the current shard), NOT IN A SANDBOX."
@@ -66,23 +76,23 @@ export default class EvalCommand extends Command {
       // return message.channel.send(clean(evaled), { code: "js" });
       return message.channel.send({ embeds: [resultEmbed] });
     } catch (err) {
+      const result =
+        clean(err).substring(0, 3950) + (clean(err).length > 3950 ? "..." : "");
       const errEmbed = BasicEmbed().setDescription(
         `**Executed Code**
           \`${code.value}\`
 
           **Result (Error)**
-          \`\`\`js\n${clean(`${err}`).substring(0, 3950)}${
-          clean(`${err}`).length > 3950 ? "..." : ""
-        }\n\`\`\``
+          \`\`\`js\n${result}\n\`\`\``
       );
       return message.channel.send({ embeds: [errEmbed] });
     }
   }
 }
 
-const clean = (text: string) => {
-  return text
-    .replace(/`/g, "`" + String.fromCharCode(8203))
-    .replace(/@/g, "@" + String.fromCharCode(8203))
+const clean = (text: string) =>
+  text
+    .toString()
+    .replaceAll(/`/g, "`" + String.fromCharCode(8203))
+    .replaceAll(/@/g, "@" + String.fromCharCode(8203))
     .replaceAll(join(__dirname, "../"), "./");
-};

@@ -1,24 +1,16 @@
-import type { Message } from "discord.js";
-import { Command } from "@sapphire/framework";
+import { PieceContext } from "@sapphire/framework";
+import { FetchCommand } from "../../structures/FetchCommand";
 
-import { ApplyCustomOptions } from "../../lib/ApplyCustomOptions";
-import { ImageEmbed } from "../../lib/EmbedBuilders";
-import { fetch, FetchResultTypes } from "@sapphire/fetch";
-
-@ApplyCustomOptions({
-  name: "highfive",
-  description: "Couldn't be more in agreement.",
-  category: "Anime",
-})
-export default class AnimeCommand extends Command {
-  async run(message: Message): Promise<Message> {
-    const data: any = await fetch(
-      "https://api.waifu.pics/sfw/highfive",
-      FetchResultTypes.JSON
-    );
-
-    const embed = ImageEmbed(data.url).setDescription(":clap: **High-five!**");
-
-    return message.channel.send({ embeds: [embed] });
+export default class AnimeCommand extends FetchCommand {
+  constructor(context: PieceContext) {
+    super(context, {
+      name: "highfive",
+      apiURL: "https://api.waifu.pics/sfw/highfive",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+      dataParser: (data): string => data.url,
+      label: ":clap: **High-five!**",
+      description: "High-five!",
+      category: "Anime",
+    });
   }
 }

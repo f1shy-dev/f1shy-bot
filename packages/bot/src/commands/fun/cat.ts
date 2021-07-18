@@ -1,27 +1,17 @@
-import type { Message } from "discord.js";
-import { Command } from "@sapphire/framework";
+import { PieceContext } from "@sapphire/framework";
+import { FetchCommand } from "../../structures/FetchCommand";
 
-import { ApplyCustomOptions } from "../../lib/ApplyCustomOptions";
-import { ImageEmbed } from "../../lib/EmbedBuilders";
-import { fetch, FetchResultTypes } from "@sapphire/fetch";
-
-@ApplyCustomOptions({
-  name: "cat",
-  description: "Looking for some fresh pussy? Look no further!",
-  aliases: ["pussy"],
-  category: "Fun",
-})
-export default class CatCommand extends Command {
-  async run(message: Message): Promise<Message> {
-    const data: any = await fetch(
-      "https://api.thecatapi.com/v1/images/search",
-      FetchResultTypes.JSON
-    );
-
-    const embed = ImageEmbed(data[0].url).setDescription(
-      ":cat: **Random Cat**"
-    );
-
-    return message.channel.send({ embeds: [embed] });
+export default class CatCommand extends FetchCommand {
+  constructor(context: PieceContext) {
+    super(context, {
+      name: "cat",
+      apiURL: "https://some-random-api.ml/img/cat",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+      dataParser: (data): string => data.link,
+      label: ":cat: **Random Cat**",
+      description: "Looking for some fresh pussy? Look no further!",
+      category: "Fun",
+      aliases: ["pussy"],
+    });
   }
 }

@@ -1,29 +1,30 @@
 import {
   Message,
   MessageActionRow,
-  MessageButton,
   MessageSelectMenu,
   SelectMenuInteraction,
-  TextChannel,
 } from "discord.js";
-import { ApplyCustomOptions } from "../../lib/ApplyCustomOptions";
-import { AliasStore, Args, Command } from "@sapphire/framework";
-import { CustomCommand } from "../../structures/CustomCommand";
+import { AliasStore, Args } from "@sapphire/framework";
+import {
+  CustomCommand,
+  CustomCommandOptions,
+} from "../../structures/CustomCommand";
 import { BasicEmbed, ErrorEmbed, InfoEmbed } from "../../lib/EmbedBuilders";
 import { getGuildSettings } from "../../lib/GetSettings";
 import { CustomClient } from "../../structures/CustomClient";
 import { categoryEmojis } from "../../lib/CategoryEmojis";
 import { nanoid } from "nanoid";
+import { ApplyOptions } from "@sapphire/decorators";
 
-@ApplyCustomOptions({
+@ApplyOptions<CustomCommandOptions>({
   name: "help",
   description: "Get help on a individual command, or get info on all commands!",
   category: "General",
-  usage: "[command/alias]",
+  argString: "[command/alias]",
   examples: ["ping", ""],
 })
-export default class HelpCommand extends Command {
-  async run(message: Message, args: Args): Promise<any> {
+export default class HelpCommand extends CustomCommand {
+  async run(message: Message, args: Args): Promise<unknown> {
     const commands = this.context.stores.get(
       "commands"
     ) as AliasStore<CustomCommand>;
@@ -51,35 +52,34 @@ export default class HelpCommand extends Command {
           ],
         });
 
-      let fields = [
+      const fields = [
         {
           name: "Description",
           value: parsed.description,
         },
         {
           name: "Usage",
-          value: `\`${guildPrefix}${parsed.name}${
-            parsed.usage ? ` ${parsed.usage}` : ""
-          }\``,
+          value: `\`${guildPrefix}${parsed.usage}\``,
         },
       ];
 
       parsed.aliases.length > 0 &&
         fields.push({
           name: "Aliases",
-          value: parsed.aliases.map((e: string) => `\`${e}\``).join(" "),
+          value: parsed.aliases.map((e: string) => `\`${e}\``).join(", "),
         });
 
-      parsed.examples &&
+      (parsed.examples || []).length > 0 &&
         fields.push({
           name: "Examples",
-          value: parsed.examples
+          value: (parsed.examples || [])
             .map(
               (e: string) =>
                 `\`${guildPrefix}${parsed.name}${e ? " " + e : ""}\``
             )
-            .join(" "),
+            .join(", "),
         });
+      parsed.extraInfoFields && fields.concat(parsed.extraInfoFields);
 
       return message.channel.send({
         embeds: [
@@ -137,18 +137,17 @@ export default class HelpCommand extends Command {
         "",
         `${categoryEmojis[selected]} ${selected} commands.`
       ).addFields(
-        Object.keys(categoryData[selected]).map((c) => {
-          const cmd = categoryData[selected][Number(c)];
-          const fullCmd = this.context.client.stores
-            .get("commands")
-            .get(cmd) as CustomCommand;
-          return {
-            name: `\`${guildPrefix}${cmd}${
-              fullCmd.usage ? " " + fullCmd.usage : ""
-            }\``,
-            value: fullCmd?.description || "N/A",
-          };
-        })
+        categoryData[selected]
+          .sort((a, b) => a.localeCompare(b))
+          .map((c) => {
+            const fullCmd = this.context.client.stores
+              .get("commands")
+              .get(c) as CustomCommand;
+            return {
+              name: `\`${guildPrefix}${fullCmd.usage}\``,
+              value: fullCmd?.description || "N/A",
+            };
+          })
       );
 
       i.deferUpdate();

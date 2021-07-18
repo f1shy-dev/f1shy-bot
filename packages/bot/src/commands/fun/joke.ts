@@ -1,24 +1,21 @@
-import type { Message } from "discord.js";
-import { Command } from "@sapphire/framework";
-
-import { ApplyCustomOptions } from "../../lib/ApplyCustomOptions";
 import { BasicEmbed } from "../../lib/EmbedBuilders";
-import { fetch, FetchResultTypes } from "@sapphire/fetch";
+import { PieceContext } from "@sapphire/framework";
+import { FetchCommand } from "../../structures/FetchCommand";
 
-@ApplyCustomOptions({
-  name: "joke",
-  description: "Perfect place for a bit of humour.",
-  aliases: ["funnyjoke", "randomjoke"],
-  category: "Fun",
-})
-export default class FactCommand extends Command {
-  async run(message: Message): Promise<Message> {
-    const data: string = await fetch(
-      "https://v2.jokeapi.dev/joke/Any?safe-mode&lang=en&format=txt",
-      FetchResultTypes.Text
-    );
-    const embed = BasicEmbed().setColor("#").setDescription(data);
-
-    return message.channel.send({ embeds: [embed] });
+export default class JokeCommand extends FetchCommand {
+  constructor(context: PieceContext) {
+    super(context, {
+      name: "joke",
+      description: "Perfect place for a bit of humour.",
+      aliases: ["funnyjoke", "randomjoke"],
+      category: "Fun",
+      apiURL: "https://v2.jokeapi.dev/joke/Any?safe-mode&lang=en&format=json",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+      dataParser: (data) =>
+        data.type === "single"
+          ? data.joke
+          : `${data.setup}\n\n${data.delivery}`,
+      embedParser: (data) => BasicEmbed(data).setColor("RANDOM"),
+    });
   }
 }

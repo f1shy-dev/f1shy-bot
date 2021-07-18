@@ -5,10 +5,13 @@ import { getGuildSettings } from "../lib/GetSettings";
 import { join } from "path";
 import "@sapphire/plugin-api/register";
 import { Intents } from "discord.js";
+import { RequestCache } from "./RequestCache";
 
 export class CustomClient extends SapphireClient {
   public db: PrismaClient;
   public settings: BotSettings | null;
+  public clientID: string;
+  public requestCache = new RequestCache();
 
   constructor(
     db: PrismaClient,
@@ -17,7 +20,7 @@ export class CustomClient extends SapphireClient {
   ) {
     const webURL =
       process.env.NODE_ENV === "development"
-        ? `http://localhost:3000`
+        ? "http://localhost:3000"
         : process.env.WEB_URL;
 
     super({
@@ -58,10 +61,20 @@ export class CustomClient extends SapphireClient {
 
     this.db = db;
     this.settings = settings;
+    this.clientID = process.env.CLIENT_ID || "69";
   }
 
-  public async login(token = process.env.DISCORD_TOKEN) {
+  public async login(token = process.env.DISCORD_TOKEN): Promise<string> {
     await this.db.$connect();
+
+    const cleanCache = () => {
+      this.logger.info(
+        `[INFO] Clearing requestCache (${this.requestCache.size()} values cleared).`
+      );
+      this.requestCache.clear();
+      setTimeout(cleanCache, 900000);
+    };
+    cleanCache();
 
     return super.login(token);
   }

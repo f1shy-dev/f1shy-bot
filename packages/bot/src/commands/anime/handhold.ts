@@ -1,26 +1,16 @@
-import type { Message } from "discord.js";
-import { Command } from "@sapphire/framework";
+import { PieceContext } from "@sapphire/framework";
+import { FetchCommand } from "../../structures/FetchCommand";
 
-import { ApplyCustomOptions } from "../../lib/ApplyCustomOptions";
-import { ImageEmbed } from "../../lib/EmbedBuilders";
-import { fetch, FetchResultTypes } from "@sapphire/fetch";
-
-@ApplyCustomOptions({
-  name: "handhold",
-  description: "Your favourite types of characters, holding hands!",
-  category: "Anime",
-})
-export default class AnimeCommand extends Command {
-  async run(message: Message): Promise<Message> {
-    const data: any = await fetch(
-      "https://api.waifu.pics/sfw/handhold",
-      FetchResultTypes.JSON
-    );
-
-    const embed = ImageEmbed(data.url).setDescription(
-      ":handshake:  **Random Handhold**"
-    );
-
-    return message.channel.send({ embeds: [embed] });
+export default class AnimeCommand extends FetchCommand {
+  constructor(context: PieceContext) {
+    super(context, {
+      name: "handhold",
+      apiURL: "https://api.waifu.pics/sfw/handhold",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+      dataParser: (data): string => data.url,
+      label: ":handshake: **Random Handhold**",
+      description: "Get a random picture of a handhold.",
+      category: "Anime",
+    });
   }
 }

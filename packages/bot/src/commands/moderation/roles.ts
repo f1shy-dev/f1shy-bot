@@ -1,17 +1,19 @@
-import { Message, Role } from "discord.js";
-import { Command } from "@sapphire/framework";
-import { ApplyCustomOptions } from "../../lib/ApplyCustomOptions";
+import { Message } from "discord.js";
 import { BasicEmbed } from "../../lib/EmbedBuilders";
-import { join } from "@prisma/client/runtime";
+import {
+  CustomCommand,
+  CustomCommandOptions,
+} from "../../structures/CustomCommand";
+import { ApplyOptions } from "@sapphire/decorators";
 
-@ApplyCustomOptions({
+@ApplyOptions<CustomCommandOptions>({
   name: "roles",
   description: "Shows a list of guild roles!",
   category: "Moderation",
   aliases: ["allroles", "listroles"],
   preconditions: ["GuildOnly"],
 })
-export default class RolesCommand extends Command {
+export default class RolesCommand extends CustomCommand {
   async run(message: Message): Promise<Message> {
     const roles = message?.guild?.roles.cache
       .sort((a, b) => b.position - a.position)
