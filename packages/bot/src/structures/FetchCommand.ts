@@ -33,17 +33,19 @@ export class FetchCommand extends CustomCommand {
   }
 
   async run(message: Message): Promise<unknown> {
+    message.channel.sendTyping();
     const cache = (this.context.client as CustomClient).requestCache;
     let parsed: string;
+    let fromCache = false;
 
     try {
       const data: unknown = await fetch(this.apiURL);
       parsed = this.dataParser(data);
       if (!data || !parsed) throw "no data";
-      cache.add(this.name, parsed);
     } catch (err) {
       console.log(err);
       parsed = cache.getRandom(this.name);
+      fromCache = true;
       if (!parsed)
         return message.channel.send({
           embeds: [
@@ -61,6 +63,7 @@ export class FetchCommand extends CustomCommand {
       this.label && embed.setDescription(this.label);
     }
 
-    return message.channel.send({ embeds: [embed] });
+    message.channel.send({ embeds: [embed] });
+    if (!fromCache) cache.add(this.name, parsed);
   }
 }
