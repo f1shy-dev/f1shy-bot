@@ -6,6 +6,7 @@ import {
   PreconditionEntryResolvable,
 } from "@sapphire/framework";
 import { EmbedFieldData, PermissionResolvable } from "discord.js";
+import { CustomClient } from "./CustomClient";
 
 export type CustomCommandOptions = CommandOptions & {
   category: string;
@@ -24,6 +25,7 @@ export abstract class CustomCommand extends Command {
   public readonly extraInfoFields?: EmbedFieldData[];
   public readonly nsfw?: boolean;
   public readonly usage?: string;
+  public client: CustomClient;
 
   public constructor(context: PieceContext, options: CustomCommandOptions) {
     super(context, CustomCommand.resolvePreconditions(context, options));
@@ -35,8 +37,8 @@ export abstract class CustomCommand extends Command {
     this.usage = `${options.name}${
       options.argString ? " " + options.argString : ""
     }`;
+    this.client = this.store.context.client as CustomClient;
   }
-
   protected static resolvePreconditions(
     _: PieceContext,
     options: CustomCommandOptions

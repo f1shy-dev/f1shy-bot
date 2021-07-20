@@ -9,7 +9,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 
 @ApplyOptions<RouteOptions>({ route: "/" })
 export class MainRoute extends Route {
-  public [methods.GET](_: ApiRequest, res: ApiResponse) {
+  public [methods.GET](_: ApiRequest, res: ApiResponse): void {
     res.json({ message: "Hello, World!" });
   }
 }

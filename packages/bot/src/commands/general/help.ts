@@ -11,7 +11,6 @@ import {
 } from "../../structures/CustomCommand";
 import { BasicEmbed, ErrorEmbed, InfoEmbed } from "../../lib/EmbedBuilders";
 import { getGuildSettings } from "../../lib/GetSettings";
-import { CustomClient } from "../../structures/CustomClient";
 import { categoryEmojis } from "../../lib/CategoryEmojis";
 import { nanoid } from "nanoid";
 import { ApplyOptions } from "@sapphire/decorators";
@@ -30,10 +29,7 @@ export default class HelpCommand extends CustomCommand {
     ) as AliasStore<CustomCommand>;
 
     const guildPrefix = (
-      await getGuildSettings(
-        (this.context.client as CustomClient).db,
-        message?.guild?.id || "69"
-      )
+      await getGuildSettings(this.client.db, message?.guild?.id || "69")
     )?.prefix;
 
     const singleCmd = await args.pickResult("string");

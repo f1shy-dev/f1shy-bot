@@ -2,7 +2,6 @@ import fetch from "@sapphire/fetch";
 import { PieceContext } from "@sapphire/framework";
 import { Message, MessageEmbed } from "discord.js";
 import { ErrorEmbed, ImageEmbed } from "../lib/EmbedBuilders";
-import { CustomClient } from "./CustomClient";
 import { CustomCommand } from "./CustomCommand";
 
 export interface FetchCommandOptions {
@@ -34,7 +33,7 @@ export class FetchCommand extends CustomCommand {
 
   async run(message: Message): Promise<unknown> {
     message.channel.sendTyping();
-    const cache = (this.context.client as CustomClient).requestCache;
+    const cache = this.client.requestCache;
     let parsed: string;
     let fromCache = false;
 

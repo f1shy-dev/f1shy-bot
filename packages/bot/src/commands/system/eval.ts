@@ -1,7 +1,6 @@
 import type { Message } from "discord.js";
 import { Args } from "@sapphire/framework";
 import { isThenable } from "@sapphire/utilities";
-import { CustomClient } from "../../structures/CustomClient";
 import { getDefaultBotSettings } from "../../lib/GetSettings";
 import { BasicEmbed, ErrorEmbed } from "../../lib/EmbedBuilders";
 import { inspect } from "util";
@@ -22,7 +21,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 })
 export default class EvalCommand extends CustomCommand {
   async run(message: Message, args: Args): Promise<Message> {
-    const prisma = (this.context.client as CustomClient).db;
+    const prisma = this.client.db;
 
     if (
       (await getDefaultBotSettings(prisma))?.botOwnerID !== message.member?.id

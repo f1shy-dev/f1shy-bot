@@ -8,7 +8,6 @@ import {
   CustomCommandOptions,
 } from "../../structures/CustomCommand";
 import { ApplyOptions } from "@sapphire/decorators";
-import { CustomClient } from "../../structures/CustomClient";
 
 const animals = [
   "dog",
@@ -56,7 +55,7 @@ export default class FactCommand extends CustomCommand {
         ],
       });
 
-    const cache = (this.context.client as CustomClient).requestCache;
+    const cache = this.client.requestCache;
     let data: string;
     try {
       data = (

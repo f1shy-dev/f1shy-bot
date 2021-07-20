@@ -1,12 +1,13 @@
-import { PrismaClient } from "@prisma/client";
+import { BotSettings, GuildSettings, PrismaClient } from "@prisma/client";
 
-export const getDefaultBotSettings = async (prisma: PrismaClient) =>
-  await prisma.botSettings.findFirst();
+export const getDefaultBotSettings = async (
+  prisma: PrismaClient
+): Promise<BotSettings | null> => await prisma.botSettings.findFirst();
 
 export const getGuildSettings = async (
   prisma: PrismaClient,
   guildID: string
-) => {
+): Promise<GuildSettings | null> => {
   return await prisma.guildSettings.findUnique({
     where: {
       guildId: guildID,
@@ -14,6 +15,7 @@ export const getGuildSettings = async (
     select: {
       prefix: true,
       advancedErrors: true,
+      guildId: true,
     },
   });
 };
