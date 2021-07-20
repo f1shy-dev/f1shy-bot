@@ -39,9 +39,8 @@ export class FetchCommand extends CustomCommand {
     let fromCache = false;
 
     try {
-      const data: unknown = await fetch(this.apiURL);
-      parsed = this.dataParser(data);
-      if (!data || !parsed) throw "no data";
+      parsed = this.dataParser(await fetch(this.apiURL));
+      if (!parsed) throw "no data";
     } catch (err) {
       console.log(err);
       parsed = cache.getRandom(this.name);
