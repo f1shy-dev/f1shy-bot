@@ -35,7 +35,8 @@ export default class FactCommand extends CustomCommand {
     message: Message,
     args: Args,
     cmdContext: CommandContext
-  ): Promise<Message> {
+  ): Promise<unknown> {
+    message.channel.sendTyping();
     let animal: string;
     const picked = await args.pickResult("string");
 
@@ -57,6 +58,7 @@ export default class FactCommand extends CustomCommand {
 
     const cache = this.client.requestCache;
     let data: string;
+    let fromCache = false;
     try {
       data = (
         (await fetch(
@@ -64,9 +66,9 @@ export default class FactCommand extends CustomCommand {
           FetchResultTypes.JSON
         )) as { fact: string }
       ).fact;
-      cache.add(animal, data);
     } catch {
       data = cache.getRandom(animal);
+      fromCache = true;
       if (!data)
         return message.channel.send({
           embeds: [
@@ -79,6 +81,7 @@ export default class FactCommand extends CustomCommand {
 
     const embed = BasicEmbed(data).setColor("RANDOM");
 
-    return message.channel.send({ embeds: [embed] });
+    message.channel.send({ embeds: [embed] });
+    if (!fromCache) cache.add(animal, data);
   }
 }
