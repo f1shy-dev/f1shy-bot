@@ -23,7 +23,7 @@ export class FetchCommand extends CustomCommand {
   public embedParser?: (data: string) => MessageEmbed;
 
   constructor(context: PieceContext, options: FetchCommandOptions) {
-    super(context, options);
+    super(context, { cooldown: "1usages/3sec", ...options });
 
     this.apiURL = options.apiURL;
     this.label = options.label;
@@ -33,7 +33,6 @@ export class FetchCommand extends CustomCommand {
 
   async run(message: Message): Promise<unknown> {
     message.channel.sendTyping();
-    const cache = this.client.requestCache;
     let parsed: string;
     let fromCache = false;
 
@@ -41,8 +40,7 @@ export class FetchCommand extends CustomCommand {
       parsed = this.dataParser(await fetch(this.apiURL));
       if (!parsed) throw "no data";
     } catch (err) {
-      console.log(err);
-      parsed = cache.getRandom(this.name);
+      parsed = this.client.requestCache.getRandom(this.name);
       fromCache = true;
       if (!parsed)
         return message.channel.send({
@@ -62,6 +60,6 @@ export class FetchCommand extends CustomCommand {
     }
 
     message.channel.send({ embeds: [embed] });
-    if (!fromCache) cache.add(this.name, parsed);
+    if (!fromCache) this.client.requestCache.add(this.name, parsed);
   }
 }

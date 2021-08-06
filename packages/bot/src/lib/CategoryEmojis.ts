@@ -4,4 +4,5 @@ export const categoryEmojis: Record<string, string> = {
   System: "⚙️",
   Anime: "🌟",
   Moderation: "🛠️",
+  "Image Fun": "🖼️",
 };

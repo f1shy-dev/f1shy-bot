@@ -16,7 +16,7 @@ export default class PingCommand extends CustomCommand {
   async run(message: Message): Promise<Message> {
     return await message.channel.send({
       embeds: [
-        BasicEmbed(":ping_pong: Pong!").setDescription(
+        BasicEmbed("", ":ping_pong: Pong!").setDescription(
           `Bot Latency: \`${this.context.client.ws.ping}ms\`
           API Latency: \`${Date.now() - message.createdTimestamp}ms\``
         ),

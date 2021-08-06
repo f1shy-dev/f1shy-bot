@@ -34,7 +34,6 @@ export default class HelpCommand extends CustomCommand {
 
     const singleCmd = await args.pickResult("string");
     if (singleCmd.success) {
-      console.log();
       const allCmds = new Map([
         ...this.context.stores.get("commands").aliases,
         ...commands,
@@ -48,7 +47,7 @@ export default class HelpCommand extends CustomCommand {
           ],
         });
 
-      const fields = [
+      let fields = [
         {
           name: "Description",
           value: parsed.description,
@@ -75,7 +74,8 @@ export default class HelpCommand extends CustomCommand {
             )
             .join(", "),
         });
-      parsed.extraInfoFields && fields.concat(parsed.extraInfoFields);
+      parsed.extraInfoFields &&
+        (fields = [...fields, ...parsed.extraInfoFields]);
 
       return message.channel.send({
         embeds: [
@@ -107,11 +107,13 @@ export default class HelpCommand extends CustomCommand {
         .setCustomId(id)
         .setPlaceholder("Categories")
         .addOptions(
-          Object.keys(categoryData).map((k) => ({
-            value: k,
-            label: k,
-            emoji: categoryEmojis[k],
-          }))
+          Object.keys(categoryData)
+            .sort((a, b) => a.localeCompare(b))
+            .map((k) => ({
+              value: k,
+              label: k,
+              emoji: categoryEmojis[k],
+            }))
         )
     );
 

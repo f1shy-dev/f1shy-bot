@@ -29,6 +29,12 @@ const animals = [
   aliases: animals.map((e) => e + "fact"),
   category: "Fun",
   argString: "(animal type)",
+  extraInfoFields: [
+    {
+      name: "Supported Animal Types",
+      value: animals.map((e) => `\`${e}\``).join(", "),
+    },
+  ],
 })
 export default class FactCommand extends CustomCommand {
   async run(

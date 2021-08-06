@@ -72,9 +72,9 @@ export class CustomClient extends SapphireClient {
         `[INFO] Clearing requestCache (${this.requestCache.size()} values cleared).`
       );
       this.requestCache.clear();
-      setTimeout(cleanCache, 900000);
+      setTimeout(cleanCache, 3600000);
     };
-    cleanCache();
+    setTimeout(cleanCache, 3600000);
 
     return super.login(token);
   }
